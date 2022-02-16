@@ -1,10 +1,24 @@
 -- What range of years for baseball games played does the provided database cover?
-
-
+-- Answer: 1871-2016
+SELECT MIN(year) AS starting_year,
+       MAX(year) AS ending_year
+FROM homegames;
 
 -- Find the name and height of the shortest player in the database.
 -- How many games did he play in? What is the name of the team for which he played?
-
+-- Answer: Edward Carl, 1 game, St.Louis Browns
+select namefirst || ' ' || namelast as full_name,
+       height,
+       a.teamid,
+       t.name,
+       a.G_all,
+       p.playerid
+from people as p
+join appearances as a using(playerid)
+join teams as t using(teamid)
+group by namefirst, namelast, height, a.teamid, t.name, a.G_all, p.playerid
+order by height
+limit 1;
 
 
 -- Find all players in the database who played at Vanderbilt University.
