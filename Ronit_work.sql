@@ -1,2 +1,74 @@
-SELECT *
-FROM allstarfull
+-- Q1
+-- -- SELECT DISTINCT yearid
+-- -- FROM teams
+-- -- ORDER BY yearid 
+-- Q2
+-- SELECT p.namegiven, a.G_all as total_games_played, t.teamID, p.height
+-- FROM people as p
+-- INNER JOIN appearances as a
+-- USING(playerid)
+-- INNER JOIN teams as t
+-- USING(teamid)
+-- WHERE p.height IS NOT NULL
+-- ORDER BY p.height
+-- LIMIT 1
+-- -- Q3
+-- SELECT  
+-- 		s.schoolname, 
+-- 		p.namefirst, 
+-- 		p.namelast, 
+-- 		SUM(DISTINCT sa.salary) as total_salary
+-- 	FROM schools as s
+-- 	INNER JOIN collegeplaying as cp
+-- 	USING(schoolid)
+-- 	INNER JOIN people as p
+-- 	USING(playerid)
+-- 	INNER JOIN salaries as sa
+-- 	USING(playerid)
+-- WHERE s.schoolname = 'Vanderbilt University'
+-- GROUP BY s.schoolname, p.namefirst, p.namelast
+-- ORDER BY total_salary DESC
+-- Q4
+-- SELECT  
+-- 	SUM(PO) as putouts,
+-- 		CASE WHEN Pos = 'OF' THEN 'Outfield'
+-- 		 WHEN Pos = 'SS' OR Pos = '1B' OR Pos = '2B' OR Pos = '3B' THEN 'Infield'
+-- 		 ELSE 'Battery' END AS position_groups
+-- FROM fielding
+-- WHERE yearID = 2016
+-- GROUP BY position_groups
+-- Q5
+-- WITH decades as
+-- (SELECT yearID, so as strikeout, G as games_played, hr as homeruns,
+-- 	CASE WHEN yearID >= 1920 and yearID <= 1929 THEN '1920s'
+-- 		 WHEN yearID >= 1930 and yearID <= 1939 THEN '1930s'
+-- 		 WHEN yearID >= 1940 and yearID <= 1949 THEN '1940s'
+-- 		 WHEN yearID >= 1950 and yearID <= 1959 THEN '1950s'
+-- 		 WHEN yearID >= 1960 and yearID <= 1969 THEN '1960s'
+-- 		 WHEN yearID >= 1970 and yearID <= 1979 THEN '1970s'
+-- 		 WHEN yearID >= 1980 and yearID <= 1989 THEN '1980s'
+-- 		 WHEN yearID >= 1990 and yearID <= 1999 THEN '1990s'
+-- 		 WHEN yearID >= 2000 and yearID <= 2009 THEN '2000s'
+-- 		 ELSE '2010s' End as Decades
+-- FROM teams)
+-- SELECT Decades, ROUND(SUM(strikeout::numeric)/SUM(games_played), 2) as avg_strikeouts, ROUND(SUM(homeruns::numeric)/SUM(games_played::numeric), 2) as avg_homeruns
+-- FROM decades
+-- WHERE yearID >= 1920
+-- GROUP BY Decades 
+-- ORDER BY Decades DESC
+-- Q6
+-- SELECT people.namefirst||' '||people.namelast as full_name, 
+-- 	   batting.yearid, 
+-- 	   batting.SB, 
+-- 	   batting.CS, 
+-- 	   ROUND((batting.SB::numeric/(batting.SB+batting.CS)*100), 2) as SB_success
+-- FROM people INNER JOIN batting ON people.playerid = batting.playerid
+-- WHERE yearID = '2016' and batting.SB+batting.CS >= '20'
+-- ORDER BY sb_success DESC
+-- LIMIT 1
+
+
+
+
+
+
