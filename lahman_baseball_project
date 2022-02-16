@@ -154,8 +154,21 @@ find the teams and parks which had the top 5 average attendance per game in 2016
 Only consider parks where there were at least 10 games played.
 Report the park name, team name, and average attendance. Repeat for the lowest 5 average attendance. */
 
+WITH avg_att AS (SELECT (SUM(attendance)/games) AS avg_attendance, park, team, year
+					    FROM homegames
+						WHERE games >= 10
+						GROUP BY games, park, team, year)
+
+SELECT park, team, avg_attendance
+FROM avg_att
+WHERE year = 2016
+ORDER BY avg_attendance DESC
+LIMIT 5;
 
 
+SELECT *
+FROM homegames
+WHERE year = 2016;
 
 
 
