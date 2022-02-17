@@ -101,7 +101,63 @@
 -- 10. Find all players who hit their career highest number of home runs in 2016. Consider only players who have played in the league for at least 10 years, and who hit at least one home run in 2016. Report the players' first and last names and the number of home runs they hit in 2016.
 --Jeremy
 
--- **Open-ended questions**
+WITH player_max AS(
+	SELECT 
+		playerid,
+		MAX(hr) AS max_hr
+	FROM batting
+	GROUP BY playerid
+	)
+
+SELECT 
+	namefirst||' '||namelast AS full_name,
+	yearid AS year,
+	SUM(hr) AS homeruns
+FROM people
+	INNER JOIN batting USING (playerid)
+	INNER JOIN player_max USING (playerid)
+WHERE 2016 - EXTRACT(year FROM debut::date) >= 10
+	AND hr > 0
+	AND yearid = 2016
+	AND max_hr = hr
+GROUP BY full_name, yearid, max_hr
+ORDER BY max_hr DESC;
+-- 
+
+-- SELECT 
+-- 	namefirst||' '||namelast AS full_name,
+-- 	yearid AS year,
+-- 	max_hr	
+-- FROM people
+-- 	INNER JOIN batting USING(playerid)
+-- 	INNER JOIN player_max USING(playerid)
+-- WHERE 2016 - EXTRACT(YEAR FROM debut::date) >= 10
+--  AND max_hr >=1
+
+
+-- WITH player_max AS(
+-- 	SELECT 
+-- 		playerid,
+-- 		MAX(hr) AS max_hr
+-- 	FROM batting
+-- 	GROUP BY playerid
+-- 	)
+	
+-- SELECT
+-- 	namefirst||' '||namelast AS full_name,
+-- 	yearid,
+-- 	hr
+-- FROM people
+-- 	INNER JOIN batting USING (playerid)
+-- 	INNER JOIN player_max USING (playerid)
+-- WHERE 2016 - EXTRACT(YEAR FROM debut::date) >= 10 
+-- 	AND yearid = 2016
+-- 	AND max_hr > 0
+-- 	AND hr = max_hr
+-- ORDER BY max_hr DESC;
+
+
+	-- **Open-ended questions**
 
 -- 11. Is there any correlation between number of wins and team salary? Use data from 2000 and later to answer this question. As you do this analysis, keep in mind that salaries across the whole league tend to increase together, so you may want to look on a year-by-year basis.
 
