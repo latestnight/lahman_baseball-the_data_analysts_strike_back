@@ -159,21 +159,12 @@ WITH avg_att AS (SELECT (SUM(attendance)/games) AS avg_attendance, park, team, y
 						WHERE games >= 10
 						GROUP BY games, park, team, year)
 
-SELECT park, team, avg_attendance
-FROM avg_att
+SELECT parks.park_name, team, avg_attendance
+FROM avg_att INNER JOIN parks
+ON parks.park = avg_att.park
 WHERE year = 2016
 ORDER BY avg_attendance DESC
 LIMIT 5;
-
-
-SELECT *
-FROM homegames
-WHERE year = 2016;
-
-
-
-
-
 
 
 
