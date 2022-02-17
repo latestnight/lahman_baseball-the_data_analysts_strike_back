@@ -28,6 +28,24 @@
 -- WHERE s.schoolname = 'Vanderbilt University'
 -- GROUP BY s.schoolname, p.namefirst, p.namelast
 -- ORDER BY total_salary DESC
+-- Q3 Redo
+-- SELECT DISTINCT playerid, schoolid
+-- FROM collegeplaying
+-- WHERE schoolid = 'vandy';
+
+-- SELECT people.namefirst||' '||people.namelast as full_name
+-- FROM people;
+
+-- SELECT DISTINCT playerid, salary
+-- FROM salaries;
+
+-- SELECT DISTINCT people.namefirst||' '||people.namelast as full_name, 
+-- 		SUM(salaries.salary) as total_salary, 
+-- 		collegeplaying.schoolid
+-- FROM Collegeplaying INNER JOIN people USING(playerID)
+-- INNER JOIN salaries USING(playerid)
+-- WHERE schoolid = 'vandy'
+-- GROUP BY full_name, collegeplaying.schoolid, collegeplaying
 -- Q4
 -- SELECT  
 -- 	SUM(PO) as putouts,
