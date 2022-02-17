@@ -174,6 +174,8 @@ WITH most_wins AS (SELECT MAX(w) AS max_wins, yearid
 				   WHERE yearid >= 1970 AND yearid <> 1981
 				   GROUP BY yearid
 				   ORDER BY max_wins DESC)
+				   
+WITH ws_winner AS (SELECT )
 
 
 
@@ -192,7 +194,7 @@ SELECT parks.park_name, team, avg_attendance
 FROM avg_att INNER JOIN parks
 ON parks.park = avg_att.park
 WHERE year = 2016
-ORDER BY avg_attendance DESC
+ORDER BY avg_attendance DESC --add/remove DESC to see highest and lowest avg
 LIMIT 5;
 
 
