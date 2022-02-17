@@ -139,12 +139,41 @@ GROUP BY p.namelast, p.namefirst, b.yearid, b.sb, b.cs
 ORDER BY successful_stolen_bases DESC;
 	
 
-/* 7.  From 1970 – 2016, what is the largest number of wins for a team that did not win the world series?
-What is the smallest number of wins for a team that did win the world series?
+/* 7.  From 1970 – 2016, what is the largest number of wins for a team that did not win the world series? --SEA, 116 wins
+What is the smallest number of wins for a team that did win the world series? 
 Doing this will probably result in an unusually small number of wins for a world series champion – determine why this is the case.
 Then redo your query, excluding the problem year. How often from 1970 – 2016 was it the case that a team with the most wins also won the world series?
 What percentage of the time? */
 
+--From 1970 – 2016, what is the largest number of wins for a team that did not win the world series? --SEA, 116 wins
+SELECT teamid, wswin AS world_series_win, MAX(w) AS wins, yearid
+FROM teams
+WHERE wswin = 'N' AND yearid BETWEEN 1970 AND 2016
+GROUP BY teamid, yearid, wswin, w
+ORDER BY W DESC;
+
+--What is the smallest number of wins for a team that did win the world series? --LAN, 63 wins in 1981. Number of wins so low due to 1981 player's strike
+SELECT teamid, wswin AS world_series_win, MIN(w) AS wins, yearid
+FROM teams
+WHERE wswin = 'Y' AND yearid BETWEEN 1970 AND 2016
+GROUP BY teamid, yearid, wswin, w
+ORDER BY W;
+
+/* redo your query, excluding the problem year. 
+How often from 1970 – 2016 was it the case that a team with the most wins also won the world series?
+What percentage of the time? */
+
+SELECT teamid, wswin AS world_series_win, MAX(w) AS wins, yearid
+FROM teams
+WHERE wswin = 'Y' AND yearid BETWEEN 1970 AND 2016 AND yearid <> 1981
+GROUP BY teamid, yearid, wswin, w
+ORDER BY W DESC;
+
+WITH most_wins AS (SELECT MAX(w) AS max_wins, yearid
+				   FROM teams
+				   WHERE yearid >= 1970 AND yearid <> 1981
+				   GROUP BY yearid
+				   ORDER BY max_wins DESC)
 
 
 
