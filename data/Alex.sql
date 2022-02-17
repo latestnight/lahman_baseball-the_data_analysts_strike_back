@@ -110,7 +110,6 @@ select namefirst||' '||namelast as full_name,
 from sb_attempts join people using(playerid)
 order by sb_percentage desc;
 
-
 -- From 1970 – 2016, what is the largest number of wins for a team that did not win the world series?
 -- What is the smallest number of wins for a team that did win the world series?
 -- Doing this will probably result in an unusually small number of wins for a world series champion – determine why this is the case.
@@ -128,10 +127,10 @@ kenny
 -- Which managers have won the TSN Manager of the Year award in both the National League (NL) and the American League (AL)?
 -- Give their full name and the teams that they were managing when they won the award.
 select namefirst || ' ' || namelast as full_name,
-       teams.name,
-       awardsmanagers.lgid,
-       awardsmanagers.yearid,
-       awardid
+       name as team_name,
+       awardsmanagers.lgid as league,
+       awardsmanagers.yearid as year,
+       awardid as award
 from awardsmanagers
 join people
      using(playerid)
@@ -153,8 +152,9 @@ and awardsmanagers.playerid in
                                from awardsmanagers
                                where awardid ilike 'tsn%'
                                and lgid = 'NL'
-                                              )
-order by yearid desc;
+                              )
+order by full_name, year desc;
+
 -- Find all players who hit their career highest number of home runs in 2016.
 -- Consider only players who have played in the league for at least 10 years, and who hit at least one home run in 2016.
 -- Report the players' first and last names and the number of home runs they hit in 2016.
@@ -163,13 +163,52 @@ jeremy
 
 -- Is there any correlation between number of wins and team salary? Use data from 2000 and later to answer this question.
 -- As you do this analysis, keep in mind that salaries across the whole league tend to increase together, so you may want to look on a year-by-year basis.
-
-
+with 
+team_data as (
+                   select yearid as year,
+                          teamid as team,
+                          w as wins,
+                          sum(salary::numeric::money) as team_salary
+                   from salaries join teams using(yearid, teamid)
+                   where yearid >= 2000
+                   group by year,
+                            team,
+                            wins
+                   order by year,
+                            team
+             ),
+rank_data as (
+              select rank() over(partition by year order by team_salary desc) as salary_rank,
+                     rank() over(partition by year order by wins desc) as wins_rank
+              from team_data
+             )
+select salary_rank,
+       round(avg(wins_rank), 2) as avg_wins_rank
+from rank_data
+group by salary_rank
+order by salary_rank;
 
 -- Does there appear to be any correlation between attendance at home games and number of wins?
-
-
-
+with
+home_att_data as (
+                  select yearid as year,
+                         attendance/ghome as avg_home_att,
+                         w as wins
+                  from teams
+                  where attendance/ghome is not null
+                  and yearid >= 1998 -- 29th and 30th team added to the MLB
+                 ),
+rank_data as (
+              select rank() over(partition by year order by avg_home_att desc) as aha_rank,
+                     rank() over(partition by year order by wins desc) as wins_rank
+              from home_att_data
+             )
+select aha_rank,
+       round(avg(wins_rank), 2) as avg_wins_rank
+from rank_data
+group by aha_rank
+order by aha_rank;
+                   
 -- Do teams that win the world series see a boost in attendance the following year? What about teams that made the playoffs?
 -- Making the playoffs means either being a division winner or a wild card winner.
 
@@ -179,3 +218,4 @@ jeremy
 -- Investigate this claim and present evidence to either support or dispute this claim.
 -- First, determine just how rare left-handed pitchers are compared with right-handed pitchers. 
 -- Are left-handed pitchers more likely to win the Cy Young Award? Are they more likely to make it into the hall of fame?
+select * from pitching;
